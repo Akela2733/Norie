@@ -80,7 +80,10 @@ export default function Home() {
   useEffect(() => {
     fetch('/api/products')
       .then((res) => res.json())
-      .then(setProducts);
+      .then((data) => {
+        if (Array.isArray(data)) setProducts(data);
+      })
+      .catch(console.error);
   }, []);
 
   const newArrivals = products.filter((p) => p.isNewArrival);

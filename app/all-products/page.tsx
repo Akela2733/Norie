@@ -28,7 +28,13 @@ function ProductsCatalogContent() {
     fetch('/api/products')
       .then((res) => res.json())
       .then((data) => {
-        setProducts(data);
+        if (Array.isArray(data)) {
+          setProducts(data);
+        }
+        setIsLoading(false);
+      })
+      .catch((err) => {
+        console.error(err);
         setIsLoading(false);
       });
   }, []);

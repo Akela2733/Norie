@@ -22,7 +22,10 @@ export default function Drawers() {
   useEffect(() => {
     fetch('/api/products')
       .then((res) => res.json())
-      .then(setProducts);
+      .then((data) => {
+        if (Array.isArray(data)) setProducts(data);
+      })
+      .catch(console.error);
   }, []);
   const searchInputRef = useRef<HTMLInputElement>(null);
 

@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { products as fallbackProducts } from '@/data/products';
 
 export async function GET() {
   try {
@@ -13,7 +14,7 @@ export async function GET() {
     }));
     return NextResponse.json(formattedProducts);
   } catch (error) {
-    console.error('Error fetching products:', error);
-    return NextResponse.json({ error: 'Failed to fetch products' }, { status: 500 });
+    console.error('Error fetching products from Prisma, falling back to static data:', error);
+    return NextResponse.json(fallbackProducts);
   }
 }
