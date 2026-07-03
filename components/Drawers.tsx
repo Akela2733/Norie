@@ -297,26 +297,10 @@ export default function Drawers() {
               <span>SUBTOTAL:</span>
               <span style={{ color: "#e8291c" }}>LKR {cartSubtotal}</span>
             </div>
-            <button
-              onClick={async () => {
-                try {
-                  const res = await fetch("/api/checkout", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ cart }),
-                  });
-                  const data = await res.json();
-                  if (data.url) {
-                    window.location.href = data.url;
-                  } else {
-                    alert("Checkout failed. Please try again.");
-                  }
-                } catch (e) {
-                  console.error(e);
-                  alert("Something went wrong");
-                }
-              }}
-              className="w-full py-4 font-black text-sm uppercase tracking-widest transition-all cursor-pointer text-center"
+            <Link
+              href="/checkout"
+              onClick={() => setActiveDrawer("none")}
+              className="block w-full py-4 font-black text-sm uppercase tracking-widest transition-all cursor-pointer text-center"
               style={{
                 fontFamily: "'Barlow Condensed', sans-serif",
                 background: "#0a0a0a",
@@ -325,7 +309,7 @@ export default function Drawers() {
               }}
             >
               [ CHECKOUT ]
-            </button>
+            </Link>
           </div>
         )}
       </div>
