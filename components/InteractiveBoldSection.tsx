@@ -76,9 +76,9 @@ export default function InteractiveBoldSection() {
       </motion.div>
 
       {/* TOP LEFT TEXT */}
-      <div className="absolute top-24 left-6 sm:left-12 z-20 pointer-events-none">
+      <div className="absolute top-24 left-6 sm:left-12 z-20 pointer-events-none max-w-[80vw]">
         <h2 
-          className="uppercase font-black leading-none text-[#0a0a0a] flex items-end gap-2"
+          className="uppercase font-black leading-none text-[#0a0a0a] flex items-end gap-2 flex-wrap sm:flex-nowrap"
           style={{ fontFamily: "'Barlow Condensed', sans-serif" }}
         >
           <span style={{ fontSize: "clamp(30px, 5vw, 60px)", letterSpacing: "-0.04em" }}>SPACE</span>
@@ -106,7 +106,7 @@ export default function InteractiveBoldSection() {
 
       {/* CENTER MODEL IMAGE */}
       <div className="absolute inset-0 flex items-end justify-center z-20 pointer-events-none pb-0">
-        <div className="relative w-[80vw] sm:w-[50vw] max-w-[600px] h-[80vh]">
+        <div className="relative w-[90vw] sm:w-[50vw] max-w-[600px] h-[65vh] sm:h-[80vh]">
           <img 
             src="/images/background-removed.png" 
             alt="Model" 
@@ -115,36 +115,18 @@ export default function InteractiveBoldSection() {
         </div>
       </div>
 
-      {/* MID-LEFT ICONS */}
-      <div className="absolute top-1/2 -translate-y-1/2 left-6 sm:left-12 flex gap-2 z-20 pointer-events-none">
-        <div className="w-10 h-10 rounded-full border border-black flex items-center justify-center">
-          <span className="text-[10px] font-bold">W</span>
-        </div>
-        <div className="w-10 h-10 rounded-full border border-black flex items-center justify-center">
-          <span className="text-[10px] font-bold">I</span>
-        </div>
-      </div>
 
-      {/* MID-RIGHT ICONS */}
-      <div className="absolute top-1/2 -translate-y-1/2 right-6 sm:right-12 flex gap-2 z-20 pointer-events-none">
-        <div className="w-10 h-10 rounded-full border border-black flex items-center justify-center">
-          <span className="text-[10px] font-bold">E</span>
-        </div>
-        <div className="w-10 h-10 rounded-full border border-black flex items-center justify-center">
-          <span className="text-[10px] font-bold">C</span>
-        </div>
-      </div>
 
       {/* BOTTOM LEFT TEXT */}
-      <div className="absolute bottom-10 left-6 sm:left-12 z-20 pointer-events-none max-w-[320px]">
+      <div className="absolute bottom-10 left-6 sm:left-12 z-20 pointer-events-none max-w-[80vw] sm:max-w-[320px]">
         <p className="uppercase font-bold text-[10px] sm:text-xs leading-relaxed" style={{ fontFamily: "'Barlow Condensed', sans-serif", letterSpacing: "0.05em" }}>
           NORIE IS ABOUT WEARING WHAT EMPOWERS YOU — WHAT MIRRORS YOUR <span style={{ color: "#e8291c" }}>EMOTIONS,</span> YOUR ENERGY, YOUR <span style={{ color: "#e8291c" }}>ESSENCE.</span>
         </p>
       </div>
 
       {/* BOTTOM RIGHT TEXT */}
-      <div className="absolute bottom-10 right-6 sm:right-12 z-20 pointer-events-none flex items-end justify-end">
-        <span className="text-6xl sm:text-8xl font-black leading-none" style={{ fontFamily: "'Barlow Condensed', sans-serif", letterSpacing: "-0.04em" }}>FREEDOM.</span>
+      <div className="absolute bottom-28 sm:bottom-10 right-6 sm:right-12 z-20 pointer-events-none flex items-end justify-end">
+        <span className="text-5xl sm:text-6xl md:text-8xl font-black leading-none" style={{ fontFamily: "'Barlow Condensed', sans-serif", letterSpacing: "-0.04em" }}>FREEDOM.</span>
       </div>
 
     </section>
