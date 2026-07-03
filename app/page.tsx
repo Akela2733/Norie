@@ -55,6 +55,41 @@ function AnimatedTicker({ texts }: { texts: string[] }) {
   );
 }
 
+// ── Skeleton Card ────────────────────────────
+function SkeletonCard({ index }: { index: number }) {
+  return (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ delay: index * 0.06 }}
+      className="relative overflow-hidden"
+      style={{ background: "#e8e2da" }}
+    >
+      <div style={{ aspectRatio: "2/3" }} className="relative overflow-hidden">
+        <motion.div
+          className="absolute inset-0"
+          style={{
+            background: "linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.4) 50%, transparent 100%)",
+          }}
+          animate={{ x: ["-100%", "100%"] }}
+          transition={{ duration: 1.4, repeat: Infinity, ease: "linear", delay: index * 0.15 }}
+        />
+      </div>
+      <div className="px-3 py-3">
+        <div className="h-3 rounded bg-[#d8d0c4] mb-2 w-3/4 overflow-hidden relative">
+          <motion.div
+            className="absolute inset-0"
+            style={{ background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.5), transparent)" }}
+            animate={{ x: ["-100%", "100%"] }}
+            transition={{ duration: 1.4, repeat: Infinity, ease: "linear", delay: index * 0.15 }}
+          />
+        </div>
+        <div className="h-3 rounded bg-[#d8d0c4] w-1/3" />
+      </div>
+    </motion.div>
+  );
+}
+
 // ── 3D Tilt Product Card ──────────────────────
 function AnimatedProductCard({ product, index }: { product: Product; index: number }) {
   const ref = useRef<HTMLDivElement>(null);
@@ -321,6 +356,7 @@ function PinnedCategories({ categories }: { categories: { name: string; count: n
 
 export default function Home() {
   const [products, setProducts] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     fetch('/api/products')
@@ -328,7 +364,8 @@ export default function Home() {
       .then((data) => {
         if (Array.isArray(data)) setProducts(data);
       })
-      .catch(console.error);
+      .catch(console.error)
+      .finally(() => setLoading(false));
   }, []);
 
   const newArrivals = products.filter((p) => p.isNewArrival);
@@ -383,9 +420,11 @@ export default function Home() {
           </div>
 
           <div className="grid grid-cols-2 lg:grid-cols-3 gap-0">
-            {newArrivals.map((product, i) => (
-              <AnimatedProductCard key={product.id} product={product} index={i} />
-            ))}
+            {loading
+              ? Array.from({ length: 6 }).map((_, i) => <SkeletonCard key={i} index={i} />)
+              : newArrivals.map((product, i) => (
+                  <AnimatedProductCard key={product.id} product={product} index={i} />
+                ))}
           </div>
         </section>
 
