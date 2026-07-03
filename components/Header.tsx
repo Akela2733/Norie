@@ -2,71 +2,89 @@
 
 import Link from "next/link";
 import { useStore } from "@/app/store-context";
-import { motion, useScroll, useMotionValueEvent } from "framer-motion";
-import { useState } from "react";
+import { motion, useScroll, useMotionValueEvent, useMotionValue, useSpring, useTransform } from "framer-motion";
+import { useState, useRef, MouseEvent } from "react";
+import { usePathname } from "next/navigation";
 
-// Animated nav link — letters shift on hover
-function NavLink({
+// Magnetic Button Component for Links
+function MagneticLink({
   href,
   children,
   onClick,
   className,
   style,
+  isActive
 }: {
   href?: string;
   children: string;
   onClick?: () => void;
   className?: string;
   style?: React.CSSProperties;
+  isActive?: boolean;
 }) {
-  const [hovered, setHovered] = useState(false);
-  const chars = children.split("");
+  const ref = useRef<HTMLAnchorElement | HTMLButtonElement>(null);
+  
+  const x = useMotionValue(0);
+  const y = useMotionValue(0);
+  
+  const mouseXSpring = useSpring(x, { stiffness: 150, damping: 15, mass: 0.1 });
+  const mouseYSpring = useSpring(y, { stiffness: 150, damping: 15, mass: 0.1 });
+
+  const handleMouseMove = (e: MouseEvent) => {
+    if (!ref.current) return;
+    const rect = ref.current.getBoundingClientRect();
+    const width = rect.width;
+    const height = rect.height;
+    const centerX = rect.left + width / 2;
+    const centerY = rect.top + height / 2;
+    
+    // Magnetic pull strength (closer to 1 = stronger pull)
+    const distanceX = e.clientX - centerX;
+    const distanceY = e.clientY - centerY;
+    
+    x.set(distanceX * 0.4);
+    y.set(distanceY * 0.4);
+  };
+
+  const handleMouseLeave = () => {
+    x.set(0);
+    y.set(0);
+  };
 
   const inner = (
-    <span
-      className="inline-flex overflow-hidden relative"
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-      style={{ display: "inline-flex", cursor: "none" }}
+    <motion.span
+      className="relative flex items-center justify-center overflow-hidden group"
+      style={{ x: mouseXSpring, y: mouseYSpring, zIndex: 10 }}
     >
-      {/* Primary text */}
-      <span className="flex">
-        {chars.map((c, i) => (
-          <motion.span
-            key={`a-${i}`}
-            animate={{ y: hovered ? "-110%" : "0%" }}
-            transition={{ duration: 0.3, delay: i * 0.025, ease: [0.16, 1, 0.3, 1] }}
-            style={{ display: "inline-block", whiteSpace: c === " " ? "pre" : "normal" }}
-          >
-            {c === " " ? "\u00a0" : c}
-          </motion.span>
-        ))}
+      <span className="relative z-10 transition-colors duration-300 group-hover:text-[#e8291c]">
+        {children}
       </span>
-      {/* Secondary text (slides up from below) */}
-      <span className="flex absolute inset-0" style={{ color: "#e8291c" }}>
-        {chars.map((c, i) => (
-          <motion.span
-            key={`b-${i}`}
-            animate={{ y: hovered ? "0%" : "110%" }}
-            transition={{ duration: 0.3, delay: i * 0.025, ease: [0.16, 1, 0.3, 1] }}
-            style={{ display: "inline-block", whiteSpace: c === " " ? "pre" : "normal" }}
-          >
-            {c === " " ? "\u00a0" : c}
-          </motion.span>
-        ))}
-      </span>
-    </span>
+      {isActive && (
+        <motion.div 
+          layoutId="active-indicator"
+          className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-[#e8291c]" 
+        />
+      )}
+    </motion.span>
   );
+
+  const sharedProps = {
+    onMouseMove: handleMouseMove,
+    onMouseLeave: handleMouseLeave,
+    className: `relative px-3 py-2 cursor-pointer ${className || ""}`,
+    style
+  };
 
   if (href) {
     return (
-      <Link href={href} className={className} style={style}>
+      <Link href={href} {...sharedProps} ref={ref as any}>
         {inner}
       </Link>
     );
   }
+  
   return (
-    <button className={className} style={style} onClick={onClick}>
+    <button onClick={onClick} {...sharedProps} ref={ref as any}>
       {inner}
     </button>
   );
@@ -75,112 +93,109 @@ function NavLink({
 export default function Header() {
   const { cart, setActiveDrawer } = useStore();
   const cartCount = cart.reduce((total, item) => total + item.quantity, 0);
+  const pathname = usePathname();
 
-  // Scroll-aware header — compact on scroll
   const { scrollY } = useScroll();
-  const [scrolled, setScrolled] = useState(false);
-  useMotionValueEvent(scrollY, "change", (v) => {
-    setScrolled(v > 60);
+  const [hidden, setHidden] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
+
+  // Hide header on scroll down, show on scroll up
+  useMotionValueEvent(scrollY, "change", (latest) => {
+    const previous = scrollY.getPrevious() ?? 0;
+    if (latest > previous && latest > 150) {
+      setHidden(true);
+    } else {
+      setHidden(false);
+    }
   });
 
   const navStyle: React.CSSProperties = {
     fontFamily: "'Barlow Condensed', sans-serif",
-    fontSize: "11px",
+    fontSize: "12px",
     fontWeight: 900,
-    letterSpacing: "0.15em",
+    letterSpacing: "0.1em",
     textTransform: "uppercase",
-    cursor: "none",
     background: "transparent",
     border: "none",
   };
 
   return (
     <motion.header
-      className="fixed top-0 left-0 right-0 z-40 select-none"
-      initial={{ y: -20, opacity: 0 }}
-      animate={{ y: 0, opacity: 1 }}
-      transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-      style={{
-        background: scrolled ? "rgba(240,236,228,0.96)" : "#f0ece4",
-        backdropFilter: scrolled ? "blur(12px)" : "none",
-        borderBottom: scrolled ? "1px solid rgba(10,10,10,0.08)" : "none",
-        transition: "background 0.4s ease, border 0.4s ease, backdrop-filter 0.4s ease",
+      className="fixed top-6 left-1/2 z-50 select-none flex justify-center w-full max-w-4xl px-4 pointer-events-none"
+      initial={{ y: -100, x: "-50%", opacity: 0 }}
+      animate={{ 
+        y: hidden ? -100 : 0, 
+        x: "-50%", 
+        opacity: hidden ? 0 : 1 
       }}
+      transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
     >
       <motion.div
-        className="flex items-start justify-between px-5"
-        animate={{ paddingTop: scrolled ? 10 : 16, paddingBottom: scrolled ? 8 : 10 }}
-        transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+        className="pointer-events-auto rounded-full flex items-center shadow-lg"
+        style={{
+          background: "rgba(240, 236, 228, 0.8)",
+          backdropFilter: "blur(20px)",
+          border: "1px solid rgba(10, 10, 10, 0.08)",
+        }}
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
+        layout
+        transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
       >
-        {/* LEFT GROUP */}
-        <div className="flex flex-col gap-[3px]">
-          <NavLink
-            style={navStyle}
-            onClick={() => setActiveDrawer("menu")}
-          >
-            MENU +
-          </NavLink>
-          <NavLink href="/all-products" style={navStyle}>
-            SHOP ALL +
-          </NavLink>
-          <NavLink
-            style={navStyle}
-            onClick={() => setActiveDrawer("categories")}
-          >
-            CATEGORIES +
-          </NavLink>
-        </div>
+        <motion.div 
+          className="flex items-center"
+          animate={{ gap: isHovered ? "2rem" : "1.5rem", padding: isHovered ? "12px 32px" : "12px 24px" }}
+          transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+        >
+          {/* LEFT LINKS (Hidden on small mobile, visible on sm+) */}
+          <div className="hidden sm:flex items-center gap-2">
+            <MagneticLink onClick={() => setActiveDrawer("menu")} style={navStyle}>
+              MENU
+            </MagneticLink>
+            <MagneticLink href="/all-products" style={navStyle} isActive={pathname === '/all-products'}>
+              SHOP
+            </MagneticLink>
+          </div>
 
-        {/* CENTER LOGO */}
-        <div className="hidden md:block absolute left-1/2 top-4 -translate-x-1/2">
-          <Link href="/" style={{ cursor: "none" }}>
-            <motion.span
-              className="font-black tracking-[0.3em] uppercase block"
-              style={{
-                fontFamily: "'Barlow Condensed', sans-serif",
-                fontSize: scrolled ? "18px" : "22px",
-                transition: "font-size 0.4s ease",
-                cursor: "none",
-              }}
-              whileHover={{ color: "#e8291c" }}
-              transition={{ duration: 0.2 }}
-            >
-              NORIE
-            </motion.span>
-          </Link>
-        </div>
+          {/* MOBILE MENU ICON (Only on tiny screens) */}
+          <div className="sm:hidden flex items-center">
+             <MagneticLink onClick={() => setActiveDrawer("menu")} style={navStyle}>
+              MENU
+            </MagneticLink>
+          </div>
 
-        {/* Mobile logo */}
-        <Link href="/" className="md:hidden absolute left-1/2 top-4 -translate-x-1/2" style={{ cursor: "none" }}>
-          <span
-            className="font-black tracking-[0.3em] uppercase"
-            style={{ fontFamily: "'Barlow Condensed', sans-serif", fontSize: "18px" }}
-          >
-            NORIE
-          </span>
-        </Link>
+          {/* CENTER LOGO */}
+          <div className="flex items-center justify-center px-4">
+            <Link href="/" className="relative group overflow-hidden">
+              <motion.span
+                className="block font-black tracking-[0.25em] uppercase text-[#0a0a0a]"
+                style={{ fontFamily: "'Barlow Condensed', sans-serif", fontSize: "20px" }}
+                animate={{ scale: isHovered ? 1.05 : 1 }}
+                transition={{ duration: 0.4, ease: "easeOut" }}
+              >
+                NORIE
+              </motion.span>
+              <div className="absolute bottom-0 left-0 w-full h-[2px] bg-[#e8291c] origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)]" />
+            </Link>
+          </div>
 
-        {/* RIGHT GROUP */}
-        <div className="flex flex-col items-end gap-[3px]">
-          <NavLink
-            style={navStyle}
-            onClick={() => setActiveDrawer("search")}
-          >
-            SEARCH
-          </NavLink>
-          <NavLink
-            style={navStyle}
-            onClick={() => setActiveDrawer("cart")}
-          >
-            {cartCount > 0 ? `BAG [ ${cartCount} ]` : "BAG"}
-          </NavLink>
-          <NavLink
-            href="/all-products?sale=true"
-            style={{ ...navStyle, color: "#e8291c" }}
-          >
-            SALE
-          </NavLink>
-        </div>
+          {/* RIGHT LINKS (Hidden on small mobile, visible on sm+) */}
+          <div className="hidden sm:flex items-center gap-2">
+            <MagneticLink onClick={() => setActiveDrawer("search")} style={navStyle}>
+              SEARCH
+            </MagneticLink>
+            <MagneticLink onClick={() => setActiveDrawer("cart")} style={navStyle}>
+              {cartCount > 0 ? `BAG [${cartCount}]` : "BAG"}
+            </MagneticLink>
+          </div>
+
+          {/* MOBILE BAG ICON (Only on tiny screens) */}
+          <div className="sm:hidden flex items-center">
+             <MagneticLink onClick={() => setActiveDrawer("cart")} style={navStyle}>
+              {cartCount > 0 ? `BAG [${cartCount}]` : "BAG"}
+            </MagneticLink>
+          </div>
+        </motion.div>
       </motion.div>
     </motion.header>
   );
