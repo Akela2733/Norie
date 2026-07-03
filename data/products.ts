@@ -19,7 +19,7 @@ export const products: Product[] = [
   {
     id: "norie-01",
     name: "lumina satin corset",
-    price: 54000,
+    price: 3820,
     image: "/categories/corsets1.jpg",
     slug: "lumina-satin-corset",
     category: "CORSETS",
@@ -33,7 +33,7 @@ export const products: Product[] = [
   {
     id: "norie-02",
     name: "obsidian lace corset",
-    price: 58500,
+    price: 2090,
     image: "/categories/corsets2.webp",
     slug: "obsidian-lace-corset",
     category: "CORSETS",
@@ -46,7 +46,7 @@ export const products: Product[] = [
   {
     id: "norie-03",
     name: "velvet structure corset",
-    price: 63000,
+    price: 4100,
     image: "/categories/corsets3.jpg",
     slug: "velvet-structure-corset",
     category: "CORSETS",
@@ -60,7 +60,7 @@ export const products: Product[] = [
   {
     id: "norie-04",
     name: "cowl velvet dress",
-    price: 78000,
+    price: 4740,
     image: "/categories/dresses1.webp",
     slug: "cowl-velvet-dress",
     category: "DRESSES",
@@ -74,7 +74,7 @@ export const products: Product[] = [
   {
     id: "norie-05",
     name: "asymmetric silk slip",
-    price: 72000,
+    price: 4770,
     image: "/categories/dresses2.jpg",
     slug: "asymmetric-silk-slip",
     category: "DRESSES",
@@ -86,7 +86,7 @@ export const products: Product[] = [
   {
     id: "norie-06",
     name: "midnight mesh maxi",
-    price: 87000,
+    price: 4030,
     image: "/categories/dresses3.jpg",
     slug: "midnight-mesh-maxi",
     category: "DRESSES",
@@ -100,7 +100,7 @@ export const products: Product[] = [
   {
     id: "norie-07",
     name: "structure cargo trousers",
-    price: 66000,
+    price: 3540,
     image: "/categories/pants1.webp",
     slug: "structure-cargo-trousers",
     category: "PANTS",
@@ -113,7 +113,7 @@ export const products: Product[] = [
   {
     id: "norie-08",
     name: "pleated wide-leg pants",
-    price: 57000,
+    price: 2740,
     image: "/categories/pants2.webp",
     slug: "pleated-wide-leg-pants",
     category: "PANTS",
@@ -125,7 +125,7 @@ export const products: Product[] = [
   {
     id: "norie-09",
     name: "leather flare trousers",
-    price: 102000,
+    price: 4090,
     image: "/categories/pants3.jpg",
     slug: "leather-flare-trousers",
     category: "PANTS",
@@ -140,8 +140,8 @@ export const products: Product[] = [
   {
     id: "norie-10",
     name: "metallic leather jacket",
-    price: 144000,
-    originalPrice: 186000,
+    price: 3970,
+    originalPrice: 4700,
     image: "/categories/jackets1.jpg",
     slug: "metallic-leather-jacket",
     category: "JACKETS",
@@ -154,7 +154,7 @@ export const products: Product[] = [
   {
     id: "norie-11",
     name: "cropped utility bomber",
-    price: 84000,
+    price: 3720,
     image: "/categories/jackets2.jpg",
     slug: "cropped-utility-bomber",
     category: "JACKETS",
@@ -166,7 +166,7 @@ export const products: Product[] = [
   {
     id: "norie-12",
     name: "oversized wool blazer",
-    price: 96000,
+    price: 3990,
     image: "/categories/jackets3.jpg",
     slug: "oversized-wool-blazer",
     category: "JACKETS",
@@ -180,8 +180,8 @@ export const products: Product[] = [
   {
     id: "norie-13",
     name: "distressed knit sweater",
-    price: 58500,
-    originalPrice: 84000,
+    price: 3220,
+    originalPrice: 3850,
     image: "/categories/tops1.jpg",
     slug: "distressed-knit-sweater",
     category: "TOPS",
@@ -193,7 +193,7 @@ export const products: Product[] = [
   {
     id: "norie-14",
     name: "sheer organza blouse",
-    price: 45000,
+    price: 2500,
     image: "/categories/tops2.jpg",
     slug: "sheer-organza-blouse",
     category: "TOPS",
@@ -205,7 +205,7 @@ export const products: Product[] = [
   {
     id: "norie-15",
     name: "ribbed asymmetric tank",
-    price: 25500,
+    price: 4050,
     image: "/categories/tops3.jpg",
     slug: "ribbed-asymmetric-tank",
     category: "TOPS",
