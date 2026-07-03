@@ -121,7 +121,7 @@ export default function Header() {
             MENU +
           </NavLink>
           <NavLink href="/all-products" style={navStyle}>
-            SHOP ALL
+            SHOP ALL +
           </NavLink>
           <NavLink
             style={navStyle}
@@ -172,7 +172,7 @@ export default function Header() {
             style={navStyle}
             onClick={() => setActiveDrawer("cart")}
           >
-            {cartCount > 0 ? `[ ${cartCount} ]` : "BAG"}
+            {cartCount > 0 ? `BAG [ ${cartCount} ]` : "BAG"}
           </NavLink>
           <NavLink
             href="/all-products?sale=true"
