@@ -188,10 +188,7 @@ function ProductsCatalogContent() {
           </div>
         ) : (
           <StaggerContainer
-            className="grid gap-0"
-            style={{
-              gridTemplateColumns: `repeat(${columnsCount}, minmax(0, 1fr))`,
-            }}
+            className={`grid gap-0 grid-cols-2 ${columnsCount === 3 ? 'md:grid-cols-3' : 'md:grid-cols-4'}`}
             delay={0.4}
             stagger={0.05}
           >
