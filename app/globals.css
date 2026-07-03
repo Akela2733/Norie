@@ -1,26 +1,164 @@
+@import url("https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Barlow:wght@400;500;600;700&display=swap");
 @import "tailwindcss";
 
+/* =============================================
+   SEROTONINN-INSPIRED DESIGN TOKENS
+   Background: warm cream #f0ece4
+   Text: pure black #0a0a0a
+   Accent: vivid red #e8291c
+   Condensed: Barlow Condensed Black
+============================================= */
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #f0ece4;
+  --foreground: #0a0a0a;
+  --accent: #e8291c;
+  --muted: #8a7a6a;
+  --muted-bg: #e0d8cc;
+  --card-bg: #f0ece4;
+  --border-subtle: rgba(10,10,10,0.12);
+  --font-condensed: 'Barlow Condensed', sans-serif;
+  --font-body: 'Barlow', sans-serif;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #f0ece4;
+    --foreground: #0a0a0a;
+    --accent: #e8291c;
+    --muted: #8a7a6a;
+    --muted-bg: #e0d8cc;
+    --card-bg: #f0ece4;
+    --border-subtle: rgba(10,10,10,0.12);
+  }
+  html, body {
+    background-color: #f0ece4 !important;
+    color: #0a0a0a !important;
+  }
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-accent: var(--accent);
+  --color-muted: var(--muted);
+  --color-muted-bg: var(--muted-bg);
+  --font-sans: var(--font-condensed);
+  --font-mono: var(--font-body);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html, body {
+  background-color: #f0ece4 !important;
+  background: #f0ece4 !important;
+  color: #0a0a0a !important;
+  font-family: 'Barlow', sans-serif;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* Header & Footer backgrounds match page */
+header {
+  background-color: #f0ece4 !important;
+}
+footer {
+  background-color: #e0d8cc !important;
+}
+
+/* =============================================
+   SCROLLBAR
+============================================= */
+::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+::-webkit-scrollbar-track {
+  background: #f0ece4;
+}
+::-webkit-scrollbar-thumb {
+  background: #c5b9ab;
+  border-radius: 0;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #0a0a0a;
+}
+
+/* =============================================
+   TYPOGRAPHY UTILITIES
+============================================= */
+.font-condensed {
+  font-family: 'Barlow Condensed', sans-serif;
+}
+.text-accent {
+  color: var(--accent);
+}
+
+/* =============================================
+   MARQUEE INFINITE SCROLL
+============================================= */
+@keyframes marquee {
+  0%   { transform: translateX(0%); }
+  100% { transform: translateX(-50%); }
+}
+.animate-marquee {
+  display: flex;
+  width: max-content;
+  animation: marquee 25s linear infinite;
+}
+
+/* =============================================
+   HERO SPLIT — torn paper divider
+============================================= */
+.torn-paper-top {
+  position: relative;
+}
+.torn-paper-top::before {
+  content: '';
+  position: absolute;
+  top: -2px;
+  left: 0;
+  right: 0;
+  height: 28px;
+  background: #f0ece4;
+  clip-path: polygon(
+    0% 100%, 2% 20%, 4% 80%, 6% 10%, 8% 70%, 10% 30%,
+    12% 90%, 14% 15%, 16% 75%, 18% 40%, 20% 85%, 22% 20%,
+    24% 65%, 26% 5%,  28% 60%, 30% 25%, 32% 80%, 34% 35%,
+    36% 90%, 38% 10%, 40% 70%, 42% 30%, 44% 75%, 46% 20%,
+    48% 85%, 50% 15%, 52% 65%, 54% 30%, 56% 80%, 58% 10%,
+    60% 55%, 62% 20%, 64% 70%, 66% 35%, 68% 85%, 70% 5%,
+    72% 60%, 74% 25%, 76% 75%, 78% 40%, 80% 90%, 82% 15%,
+    84% 65%, 86% 30%, 88% 80%, 90% 10%, 92% 55%, 94% 20%,
+    96% 70%, 98% 35%, 100% 90%, 100% 100%
+  );
+  z-index: 10;
+  pointer-events: none;
+}
+
+/* =============================================
+   VERTICAL TEXT CATEGORIES
+============================================= */
+.vertical-text {
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+  transform: rotate(180deg);
+}
+
+/* =============================================
+   GLASSMORPHISM FOR DRAWERS
+============================================= */
+.glassmorphic-drawer {
+  background: rgba(240, 236, 228, 0.97) !important;
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+}
+
+/* =============================================
+   BRUSH STROKE ANIMATION
+============================================= */
+@keyframes brushReveal {
+  from { clip-path: inset(0 100% 0 0); }
+  to   { clip-path: inset(0 0% 0 0); }
+}
+.brush-reveal {
+  animation: brushReveal 0.6s ease-out forwards;
 }
