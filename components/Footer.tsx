@@ -1,15 +1,15 @@
 "use client";
 
 import Link from "next/link";
-import { motion } from "framer-motion";
-import { useRef, useState, useEffect } from "react";
+import { motion, useScroll, useTransform } from "framer-motion";
+import { useRef } from "react";
 
 function FooterTicker() {
   const texts = ["WHERE GLAM MEETS GRUNGE", "LATEST DROPS", "THE ARCHIVE", "STRUCTURAL DESIGN"];
   const repeated = [...texts, ...texts, ...texts, ...texts, ...texts];
   
   return (
-    <div className="w-full overflow-hidden py-4 border-b border-[rgba(240,236,228,0.1)]" style={{ background: "#0a0a0a" }}>
+    <div className="w-full overflow-hidden py-4 border-b border-[rgba(240,236,228,0.1)] group transition-colors duration-700 hover:bg-[#e8291c]">
       <motion.div
         className="flex w-max"
         animate={{ x: ["0%", "-50%"] }}
@@ -18,12 +18,12 @@ function FooterTicker() {
         {repeated.map((text, i) => (
           <span key={i} className="inline-flex items-center gap-6 flex-shrink-0">
             <span
-              className="font-black uppercase text-xs tracking-widest whitespace-nowrap px-6"
-              style={{ fontFamily: "'Barlow Condensed', sans-serif", color: "#f0ece4", letterSpacing: "0.2em" }}
+              className="font-black uppercase text-xs tracking-widest whitespace-nowrap px-6 transition-colors duration-700 text-[#f0ece4] group-hover:text-[#0a0a0a]"
+              style={{ fontFamily: "'Barlow Condensed', sans-serif", letterSpacing: "0.2em" }}
             >
               {text}
             </span>
-            <span style={{ color: "#e8291c", fontWeight: 900, fontSize: "16px" }}>•</span>
+            <span className="font-black text-[16px] transition-colors duration-700 text-[#e8291c] group-hover:text-[#0a0a0a]">•</span>
           </span>
         ))}
       </motion.div>
@@ -47,29 +47,28 @@ function StrikeLink({ children, href }: { children: string, href?: string }) {
 }
 
 export default function Footer() {
-  const [footerHeight, setFooterHeight] = useState(0);
-  const footerRef = useRef<HTMLElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+  
+  // Create a flawless parallax scroll effect for the footer content
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ["start end", "end end"]
+  });
 
-  useEffect(() => {
-    if (!footerRef.current) return;
-    const observer = new ResizeObserver((entries) => {
-      for (let entry of entries) {
-        setFooterHeight(entry.contentRect.height);
-      }
-    });
-    observer.observe(footerRef.current);
-    return () => observer.disconnect();
-  }, []);
+  const y = useTransform(scrollYProgress, [0, 1], ["-30%", "0%"]);
+  // Color change for the massive background text
+  const opacity = useTransform(scrollYProgress, [0, 1], [0, 0.05]);
+  const scale = useTransform(scrollYProgress, [0, 1], [0.9, 1]);
 
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   return (
-    <>
-      <footer 
-        ref={footerRef} 
-        className="relative w-full overflow-hidden select-none bg-[#0a0a0a] text-[#f0ece4]"
+    <div ref={containerRef} className="relative w-full overflow-hidden bg-[#0a0a0a]">
+      <motion.footer 
+        style={{ y }}
+        className="w-full relative select-none text-[#f0ece4]"
       >
         
         {/* Top Endless Marquee */}
@@ -141,21 +140,23 @@ export default function Footer() {
           </div>
         </div>
 
-        {/* Massive Static Logo Background */}
+        {/* Massive Dynamic Logo Background */}
         <div className="absolute bottom-[-10%] left-0 right-0 pointer-events-none flex justify-center overflow-hidden">
-          <span 
-            className="font-black uppercase leading-[0.75] text-[rgba(240,236,228,0.03)]"
+          <motion.span 
+            className="font-black uppercase leading-[0.75] text-[#f0ece4]"
             style={{ 
               fontFamily: "'Barlow Condensed', sans-serif", 
               fontSize: "clamp(120px, 28vw, 600px)",
-              letterSpacing: "-0.03em"
+              letterSpacing: "-0.03em",
+              opacity,
+              scale
             }}
           >
             NORIE
-          </span>
+          </motion.span>
         </div>
 
-      </footer>
-    </>
+      </motion.footer>
+    </div>
   );
 }
