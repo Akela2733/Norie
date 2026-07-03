@@ -255,79 +255,85 @@ export default function Home() {
             </span>
           </FadeUp>
 
-          <div className="flex gap-0 overflow-x-auto" style={{ scrollbarWidth: "none" }}>
-            {categories.map((cat, i) => (
-              <motion.div
-                key={cat.name}
-                initial={{ opacity: 0, y: 80 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-60px" }}
-                transition={{ duration: 0.7, delay: i * 0.1, ease: [0.16, 1, 0.3, 1] }}
-                style={{ flexShrink: 0, width: "20vw", minWidth: "180px", maxWidth: "260px", height: "55vh", minHeight: "380px" }}
-              >
-                <Link href={`/all-products?category=${cat.name}`} className="block h-full relative group overflow-hidden">
-                  {/* Image with zoom on hover */}
-                  <motion.div
-                    className="absolute inset-0"
-                    whileHover={{ scale: 1.06 }}
-                    transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-                    style={{ background: "#d8d0c4" }}
-                  >
-                    <Image
-                      src={cat.image}
-                      alt={cat.name}
-                      fill
-                      className="object-cover object-top"
-                      style={{ opacity: 0.85 }}
+          <div className="w-full overflow-hidden flex">
+            <motion.div
+              className="flex gap-0 w-max"
+              animate={{ x: ["0%", "-50%"] }}
+              transition={{ duration: 35, ease: "linear", repeat: Infinity }}
+            >
+              {[...categories, ...categories, ...categories, ...categories].map((cat, i) => (
+                <motion.div
+                  key={`${cat.name}-${i}`}
+                  initial={{ opacity: 0, y: 80 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, margin: "-60px" }}
+                  transition={{ duration: 0.7, delay: (i % categories.length) * 0.1, ease: [0.16, 1, 0.3, 1] }}
+                  style={{ flexShrink: 0, width: "20vw", minWidth: "180px", maxWidth: "260px", height: "55vh", minHeight: "380px" }}
+                >
+                  <Link href={`/all-products?category=${cat.name}`} className="block h-full relative group overflow-hidden">
+                    {/* Image with zoom on hover */}
+                    <motion.div
+                      className="absolute inset-0"
+                      whileHover={{ scale: 1.06 }}
+                      transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+                      style={{ background: "#d8d0c4" }}
+                    >
+                      <Image
+                        src={cat.image}
+                        alt={cat.name}
+                        fill
+                        className="object-cover object-top"
+                        style={{ opacity: 0.85 }}
+                      />
+                    </motion.div>
+
+                    {/* Vertical label */}
+                    <motion.div
+                      className="absolute left-0 top-0 bottom-0 w-12 flex items-center justify-center z-10"
+                      whileHover={{ backgroundColor: "rgba(232, 41, 28, 0.12)" }}
+                      transition={{ duration: 0.3 }}
+                    >
+                      <span
+                        className="vertical-text font-black uppercase leading-none select-none"
+                        style={{
+                          fontFamily: "'Barlow Condensed', sans-serif",
+                          fontSize: "clamp(24px, 3vw, 48px)",
+                          color: "#0a0a0a",
+                          letterSpacing: "0.05em",
+                        }}
+                      >
+                        {cat.name}
+                      </span>
+                    </motion.div>
+
+                    {/* Count badge */}
+                    <motion.div
+                      className="absolute bottom-4 right-4 z-10"
+                      initial={{ opacity: 0, scale: 0.8 }}
+                      whileInView={{ opacity: 1, scale: 1 }}
+                      viewport={{ once: true }}
+                      transition={{ delay: 0.3 + (i % categories.length) * 0.1 }}
+                    >
+                      <span
+                        className="font-bold text-xs"
+                        style={{ fontFamily: "'Barlow Condensed', sans-serif" }}
+                      >
+                        [ {cat.count} ]
+                      </span>
+                    </motion.div>
+
+                    {/* Hover overlay — red tint bar at bottom */}
+                    <motion.div
+                      className="absolute bottom-0 left-0 right-0 h-1 z-20"
+                      initial={{ scaleX: 0 }}
+                      whileHover={{ scaleX: 1 }}
+                      transition={{ duration: 0.3, ease: "easeOut" }}
+                      style={{ background: "#e8291c", transformOrigin: "left" }}
                     />
-                  </motion.div>
-
-                  {/* Vertical label */}
-                  <motion.div
-                    className="absolute left-0 top-0 bottom-0 w-12 flex items-center justify-center z-10"
-                    whileHover={{ backgroundColor: "rgba(232, 41, 28, 0.12)" }}
-                    transition={{ duration: 0.3 }}
-                  >
-                    <span
-                      className="vertical-text font-black uppercase leading-none select-none"
-                      style={{
-                        fontFamily: "'Barlow Condensed', sans-serif",
-                        fontSize: "clamp(24px, 3vw, 48px)",
-                        color: "#0a0a0a",
-                        letterSpacing: "0.05em",
-                      }}
-                    >
-                      {cat.name}
-                    </span>
-                  </motion.div>
-
-                  {/* Count badge */}
-                  <motion.div
-                    className="absolute bottom-4 right-4 z-10"
-                    initial={{ opacity: 0, scale: 0.8 }}
-                    whileInView={{ opacity: 1, scale: 1 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: 0.3 + i * 0.1 }}
-                  >
-                    <span
-                      className="font-bold text-xs"
-                      style={{ fontFamily: "'Barlow Condensed', sans-serif" }}
-                    >
-                      [ {cat.count} ]
-                    </span>
-                  </motion.div>
-
-                  {/* Hover overlay — red tint bar at bottom */}
-                  <motion.div
-                    className="absolute bottom-0 left-0 right-0 h-1 z-20"
-                    initial={{ scaleX: 0 }}
-                    whileHover={{ scaleX: 1 }}
-                    transition={{ duration: 0.3, ease: "easeOut" }}
-                    style={{ background: "#e8291c", transformOrigin: "left" }}
-                  />
-                </Link>
-              </motion.div>
-            ))}
+                  </Link>
+                </motion.div>
+              ))}
+            </motion.div>
           </div>
         </section>
 
