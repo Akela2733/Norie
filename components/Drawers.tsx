@@ -1,7 +1,7 @@
 "use client";
 
 import { useStore } from "@/app/store-context";
-import { products, categoriesList } from "@/data/products";
+import { categoriesList } from "@/data/products";
 import Link from "next/link";
 import Image from "next/image";
 import { useState, useEffect, useRef } from "react";
@@ -17,6 +17,13 @@ export default function Drawers() {
   } = useStore();
 
   const [searchQuery, setSearchQuery] = useState("");
+  const [products, setProducts] = useState<any[]>([]);
+
+  useEffect(() => {
+    fetch('/api/products')
+      .then((res) => res.json())
+      .then(setProducts);
+  }, []);
   const searchInputRef = useRef<HTMLInputElement>(null);
 
   // Focus search input when search drawer opens
@@ -210,7 +217,7 @@ export default function Drawers() {
                   </Link>
                   <div className="text-xs font-bold uppercase tracking-widest opacity-50 mt-1 flex gap-4" style={{ fontFamily: "'Barlow Condensed', sans-serif" }}>
                     <span>SIZE: {item.size}</span>
-                    <span>{item.price}_$</span>
+                    <span>LKR {item.price}</span>
                   </div>
                   <div className="flex items-center gap-3 mt-2">
                     <button
@@ -266,11 +273,11 @@ export default function Drawers() {
                       <span className="block text-[9px] font-mono text-foreground/45 mt-0.5">
                         {item.originalPrice ? (
                           <>
-                            <span className="line-through text-foreground/25 mr-1.5">${item.originalPrice}</span>
-                            <span className="text-primary font-semibold">${item.price}</span>
+                            <span className="line-through text-foreground/25 mr-1.5">LKR {item.originalPrice}</span>
+                            <span className="text-primary font-semibold">LKR {item.price}</span>
                           </>
                         ) : (
-                          `$${item.price}`
+                          `LKR ${item.price}`
                         )}
                       </span>
                     </div>
@@ -285,10 +292,27 @@ export default function Drawers() {
           <div className="pt-4 mt-4 space-y-4" style={{ borderTop: "1px solid rgba(10,10,10,0.12)" }}>
             <div className="flex justify-between items-center text-sm font-black uppercase tracking-widest" style={{ fontFamily: "'Barlow Condensed', sans-serif" }}>
               <span>SUBTOTAL:</span>
-              <span style={{ color: "#e8291c" }}>{cartSubtotal}_$</span>
+              <span style={{ color: "#e8291c" }}>LKR {cartSubtotal}</span>
             </div>
             <button
-              onClick={() => alert("Norie Store Checkout is simulated! Thank you for reviewing.")}
+              onClick={async () => {
+                try {
+                  const res = await fetch("/api/checkout", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ cart }),
+                  });
+                  const data = await res.json();
+                  if (data.url) {
+                    window.location.href = data.url;
+                  } else {
+                    alert("Checkout failed. Please try again.");
+                  }
+                } catch (e) {
+                  console.error(e);
+                  alert("Something went wrong");
+                }
+              }}
               className="w-full py-4 font-black text-sm uppercase tracking-widest transition-all cursor-pointer text-center"
               style={{
                 fontFamily: "'Barlow Condensed', sans-serif",
@@ -375,11 +399,11 @@ export default function Drawers() {
                     <span className="block text-[9px] font-mono text-foreground/50 mt-1">
                       {product.originalPrice ? (
                         <>
-                          <span className="line-through text-foreground/25 mr-1.5">${product.originalPrice}</span>
-                          <span className="text-foreground font-semibold">${product.price}</span>
+                          <span className="line-through text-foreground/25 mr-1.5">LKR {product.originalPrice}</span>
+                          <span className="text-foreground font-semibold">LKR {product.price}</span>
                         </>
                       ) : (
-                        `$${product.price}`
+                        `LKR ${product.price}`
                       )}
                     </span>
                   </Link>

@@ -4,7 +4,7 @@ import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
-import { Product, products } from "@/data/products";
+import { Product } from "@/data/products";
 import { useStore } from "@/app/store-context";
 import ProductCard from "@/components/ProductCard";
 import { FadeUp, SplitText, StaggerContainer, StaggerItem, PageTransition } from "@/components/Animations";
@@ -12,9 +12,10 @@ import { FadeUp, SplitText, StaggerContainer, StaggerItem, PageTransition } from
 
 interface ProductDetailsClientProps {
   product: Product;
+  relatedProducts: Product[];
 }
 
-export default function ProductDetailsClient({ product }: ProductDetailsClientProps) {
+export default function ProductDetailsClient({ product, relatedProducts }: ProductDetailsClientProps) {
   const { addToCart, favorites, toggleFavorite } = useStore();
 
   const [selectedSize, setSelectedSize] = useState<string>("");
@@ -24,7 +25,7 @@ export default function ProductDetailsClient({ product }: ProductDetailsClientPr
   const [addedToBag, setAddedToBag] = useState<boolean>(false);
 
   const isFavorited = favorites.includes(product.id);
-  const relatedProducts = products.filter(p => p.id !== product.id).slice(0, 4);
+
 
   const handleAddToBag = () => {
     if (!selectedSize) { setSizeWarning(true); return; }
@@ -120,7 +121,7 @@ export default function ProductDetailsClient({ product }: ProductDetailsClientPr
                       className="text-base line-through opacity-35 font-bold"
                       style={{ fontFamily: "'Barlow Condensed', sans-serif" }}
                     >
-                      ({product.originalPrice},00_$)
+                      (LKR {product.originalPrice}.00)
                     </span>
                   )}
                   <span
@@ -130,7 +131,7 @@ export default function ProductDetailsClient({ product }: ProductDetailsClientPr
                       color: product.originalPrice ? "#e8291c" : "#e8291c",
                     }}
                   >
-                    ({product.price},00_$)
+                    (LKR {product.price}.00)
                   </span>
                 </div>
               </StaggerItem>

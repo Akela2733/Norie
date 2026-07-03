@@ -1,0 +1,53 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Product {
+  id            String      @id
+  name          String
+  price         Int
+  originalPrice Int?
+  image         String
+  slug          String      @unique
+  category      String
+  description   String
+  details       String      // Stored as JSON string
+  care          String      // Stored as JSON string
+  sizes         String      // Stored as JSON string
+  isNewArrival  Boolean     @default(false)
+  isBestSeller  Boolean     @default(false)
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+  orderItems    OrderItem[]
+}
+
+model Order {
+  id          String      @id @default(uuid())
+  sessionId   String?     // Stripe session ID
+  status      String      @default("pending") // pending, paid, shipped, cancelled
+  total       Int
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  customerName  String?
+  customerEmail String?
+  customerPhone String?
+  address       String?
+  items       OrderItem[]
+}
+
+model OrderItem {
+  id        String  @id @default(uuid())
+  orderId   String
+  productId String
+  size      String
+  quantity  Int
+  price     Int
+
+  order     Order   @relation(fields: [orderId], references: [id])
+  product   Product @relation(fields: [productId], references: [id])
+}

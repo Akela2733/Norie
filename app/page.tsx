@@ -25,7 +25,9 @@ import {
 import HeroSlider from "@/components/HeroSlider";
 import InteractiveBoldSection from "@/components/InteractiveBoldSection";
 import ProductCard from "@/components/ProductCard";
-import { products } from "@/data/products";
+
+
+import { Product } from "@/data/products";
 
 // ── Animated ticker ──────────────────────────
 function AnimatedTicker({ texts }: { texts: string[] }) {
@@ -54,7 +56,7 @@ function AnimatedTicker({ texts }: { texts: string[] }) {
 }
 
 // ── Product Card with advanced hover animation ──
-function AnimatedProductCard({ product, index }: { product: typeof products[0]; index: number }) {
+function AnimatedProductCard({ product, index }: { product: Product; index: number }) {
   const ref = useRef<HTMLDivElement>(null);
   const isInView = useInView(ref, { once: true, margin: "-60px 0px" });
 
@@ -73,6 +75,14 @@ function AnimatedProductCard({ product, index }: { product: typeof products[0]; 
 }
 
 export default function Home() {
+  const [products, setProducts] = useState<any[]>([]);
+
+  useEffect(() => {
+    fetch('/api/products')
+      .then((res) => res.json())
+      .then(setProducts);
+  }, []);
+
   const newArrivals = products.filter((p) => p.isNewArrival);
   const bestSellers = products.filter((p) => p.isBestSeller);
 

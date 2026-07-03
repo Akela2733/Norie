@@ -4,7 +4,7 @@ import React, { useState, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
-import { products, categoriesList } from "@/data/products";
+import { categoriesList } from "@/data/products";
 import ProductCard from "@/components/ProductCard";
 import { PageTransition, SplitText, FadeUp, StaggerContainer, StaggerItem } from "@/components/Animations";
 import { useTransition } from "@/components/TransitionContext";
@@ -21,6 +21,17 @@ function ProductsCatalogContent() {
   const [selectedSize, setSelectedSize] = useState<string>("ALL");
   const [sortBy, setSortBy] = useState<string>("DEFAULT");
   const [columnsCount, setColumnsCount] = useState<3 | 4>(4);
+  const [products, setProducts] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    fetch('/api/products')
+      .then((res) => res.json())
+      .then((data) => {
+        setProducts(data);
+        setIsLoading(false);
+      });
+  }, []);
 
   useEffect(() => {
     if (categoryParam) {
@@ -177,7 +188,16 @@ function ProductsCatalogContent() {
         </FadeUp>
 
         {/* ── Grid ── */}
-        {filtered.length === 0 ? (
+        {isLoading ? (
+          <div className="text-center py-32">
+            <span
+              className="font-bold uppercase text-sm tracking-widest opacity-40"
+              style={{ fontFamily: "'Barlow Condensed', sans-serif" }}
+            >
+              LOADING PRODUCTS...
+            </span>
+          </div>
+        ) : filtered.length === 0 ? (
           <div className="text-center py-32">
             <span
               className="font-bold uppercase text-sm tracking-widest opacity-40"

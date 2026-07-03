@@ -89,7 +89,7 @@ export default function ProductCard({ product, showBestSeller = false, size = "n
         <div className="flex items-center gap-2 mt-1">
           {hasDiscount && (
             <span className="text-xs line-through opacity-40" style={{ fontFamily: "'Barlow Condensed', sans-serif" }}>
-              {product.originalPrice}_$
+              LKR {product.originalPrice}
             </span>
           )}
           <span
@@ -99,7 +99,7 @@ export default function ProductCard({ product, showBestSeller = false, size = "n
               color: hasDiscount ? "#e8291c" : "#0a0a0a",
             }}
           >
-            {product.price}_$
+            LKR {product.price}
           </span>
         </div>
       </div>

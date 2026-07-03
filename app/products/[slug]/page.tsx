@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import { products } from "@/data/products";
+import { prisma } from "@/lib/prisma";
 import ProductDetailsClient from "./product-details-client";
 
 interface PageProps {
@@ -8,6 +8,7 @@ interface PageProps {
 
 // Statically generate the paths for products at build time
 export async function generateStaticParams() {
+  const products = await prisma.product.findMany({ select: { slug: true } });
   return products.map((product) => ({
     slug: product.slug,
   }));
@@ -17,11 +18,34 @@ export default async function ProductPage({ params }: PageProps) {
   const resolvedParams = await params;
   const { slug } = resolvedParams;
 
-  const product = products.find((p) => p.slug === slug);
+  const rawProduct = await prisma.product.findUnique({ where: { slug } });
+  
+  if (!rawProduct) {
+    notFound();
+  }
+
+  const product = {
+    ...rawProduct,
+    details: JSON.parse(rawProduct.details),
+    care: JSON.parse(rawProduct.care),
+    sizes: JSON.parse(rawProduct.sizes),
+  };
 
   if (!product) {
     notFound();
   }
 
-  return <ProductDetailsClient product={product} />;
+  const relatedRaw = await prisma.product.findMany({
+    where: { id: { not: product.id } },
+    take: 4,
+  });
+
+  const relatedProducts = relatedRaw.map((p) => ({
+    ...p,
+    details: JSON.parse(p.details),
+    care: JSON.parse(p.care),
+    sizes: JSON.parse(p.sizes),
+  }));
+
+  return <ProductDetailsClient product={product} relatedProducts={relatedProducts} />;
 }
