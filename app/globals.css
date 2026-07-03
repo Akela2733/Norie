@@ -56,13 +56,6 @@ html, body {
   -webkit-font-smoothing: antialiased;
 }
 
-/* Header & Footer backgrounds match page */
-header {
-  background-color: #f0ece4 !important;
-}
-footer {
-  background-color: #e0d8cc !important;
-}
 
 /* =============================================
    SCROLLBAR
