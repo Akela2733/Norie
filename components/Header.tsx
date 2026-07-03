@@ -2,89 +2,80 @@
 
 import Link from "next/link";
 import { useStore } from "@/app/store-context";
-import { motion, useScroll, useMotionValueEvent, useMotionValue, useSpring, useTransform } from "framer-motion";
-import { useState, useRef, MouseEvent } from "react";
-import { usePathname } from "next/navigation";
+import { motion, useScroll, useMotionValueEvent } from "framer-motion";
+import { useState } from "react";
 
-// Magnetic Button Component for Links
-function MagneticLink({
-  href,
+function FlipText({
   children,
+  href,
   onClick,
-  className,
-  style,
-  isActive
+  className = "",
 }: {
-  href?: string;
   children: string;
+  href?: string;
   onClick?: () => void;
   className?: string;
-  style?: React.CSSProperties;
-  isActive?: boolean;
 }) {
-  const ref = useRef<HTMLAnchorElement | HTMLButtonElement>(null);
+  const chars = children.split("");
   
-  const x = useMotionValue(0);
-  const y = useMotionValue(0);
-  
-  const mouseXSpring = useSpring(x, { stiffness: 150, damping: 15, mass: 0.1 });
-  const mouseYSpring = useSpring(y, { stiffness: 150, damping: 15, mass: 0.1 });
-
-  const handleMouseMove = (e: MouseEvent) => {
-    if (!ref.current) return;
-    const rect = ref.current.getBoundingClientRect();
-    const width = rect.width;
-    const height = rect.height;
-    const centerX = rect.left + width / 2;
-    const centerY = rect.top + height / 2;
-    
-    // Magnetic pull strength (closer to 1 = stronger pull)
-    const distanceX = e.clientX - centerX;
-    const distanceY = e.clientY - centerY;
-    
-    x.set(distanceX * 0.4);
-    y.set(distanceY * 0.4);
-  };
-
-  const handleMouseLeave = () => {
-    x.set(0);
-    y.set(0);
-  };
-
   const inner = (
-    <motion.span
-      className="relative flex items-center justify-center overflow-hidden group"
-      style={{ x: mouseXSpring, y: mouseYSpring, zIndex: 10 }}
+    <motion.div
+      initial="initial"
+      whileHover="hovered"
+      className="relative block overflow-hidden whitespace-nowrap cursor-pointer"
+      style={{ lineHeight: 1, padding: "4px 0" }}
     >
-      <span className="relative z-10 transition-colors duration-300 group-hover:text-[#e8291c]">
-        {children}
-      </span>
-      {isActive && (
-        <motion.div 
-          layoutId="active-indicator"
-          className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-[#e8291c]" 
-        />
-      )}
-    </motion.span>
+      <div>
+        {chars.map((l, i) => (
+          <motion.span
+            variants={{
+              initial: { y: 0, rotateX: 0, opacity: 1 },
+              hovered: { y: "-100%", rotateX: 80, opacity: 0 }
+            }}
+            transition={{
+              duration: 0.4,
+              ease: [0.33, 1, 0.68, 1],
+              delay: 0.02 * i
+            }}
+            className="inline-block origin-top"
+            key={`top-${i}`}
+          >
+            {l === " " ? "\u00a0" : l}
+          </motion.span>
+        ))}
+      </div>
+      <div className="absolute inset-0 top-[4px]">
+        {chars.map((l, i) => (
+          <motion.span
+            variants={{
+              initial: { y: "100%", rotateX: -80, opacity: 0 },
+              hovered: { y: 0, rotateX: 0, opacity: 1 }
+            }}
+            transition={{
+              duration: 0.4,
+              ease: [0.33, 1, 0.68, 1],
+              delay: 0.02 * i
+            }}
+            className="inline-block origin-bottom"
+            key={`bottom-${i}`}
+          >
+            {l === " " ? "\u00a0" : l}
+          </motion.span>
+        ))}
+      </div>
+    </motion.div>
   );
-
-  const sharedProps = {
-    onMouseMove: handleMouseMove,
-    onMouseLeave: handleMouseLeave,
-    className: `relative px-3 py-2 cursor-pointer ${className || ""}`,
-    style
-  };
 
   if (href) {
     return (
-      <Link href={href} {...sharedProps} ref={ref as any}>
+      <Link href={href} className={className}>
         {inner}
       </Link>
     );
   }
-  
+
   return (
-    <button onClick={onClick} {...sharedProps} ref={ref as any}>
+    <button onClick={onClick} className={className}>
       {inner}
     </button>
   );
@@ -93,13 +84,10 @@ function MagneticLink({
 export default function Header() {
   const { cart, setActiveDrawer } = useStore();
   const cartCount = cart.reduce((total, item) => total + item.quantity, 0);
-  const pathname = usePathname();
 
   const { scrollY } = useScroll();
   const [hidden, setHidden] = useState(false);
-  const [isHovered, setIsHovered] = useState(false);
 
-  // Hide header on scroll down, show on scroll up
   useMotionValueEvent(scrollY, "change", (latest) => {
     const previous = scrollY.getPrevious() ?? 0;
     if (latest > previous && latest > 150) {
@@ -109,94 +97,45 @@ export default function Header() {
     }
   });
 
-  const navStyle: React.CSSProperties = {
-    fontFamily: "'Barlow Condensed', sans-serif",
-    fontSize: "12px",
-    fontWeight: 900,
-    letterSpacing: "0.1em",
-    textTransform: "uppercase",
-    background: "transparent",
-    border: "none",
-  };
-
   return (
     <motion.header
-      className="fixed top-6 left-1/2 z-50 select-none flex justify-center w-full max-w-4xl px-4 pointer-events-none"
-      initial={{ y: -100, x: "-50%", opacity: 0 }}
+      className="fixed top-0 left-0 right-0 z-50 select-none pointer-events-none px-6 md:px-12 py-8 mix-blend-difference text-white"
+      initial={{ y: -100, opacity: 0 }}
       animate={{ 
         y: hidden ? -100 : 0, 
-        x: "-50%", 
         opacity: hidden ? 0 : 1 
       }}
-      transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+      transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+      style={{ mixBlendMode: "difference", color: "#fff" }}
     >
-      <motion.div
-        className="pointer-events-auto rounded-full flex items-center shadow-lg"
-        style={{
-          background: "rgba(240, 236, 228, 0.8)",
-          backdropFilter: "blur(20px)",
-          border: "1px solid rgba(10, 10, 10, 0.08)",
-        }}
-        onMouseEnter={() => setIsHovered(true)}
-        onMouseLeave={() => setIsHovered(false)}
-        layout
-        transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-      >
-        <motion.div 
-          className="flex items-center"
-          animate={{ gap: isHovered ? "2rem" : "1.5rem", padding: isHovered ? "12px 32px" : "12px 24px" }}
-          transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+      <div className="flex items-start justify-between w-full pointer-events-auto">
+        
+        {/* LEFT LOGO */}
+        <div className="flex-1">
+          <Link href="/" className="inline-block cursor-pointer">
+            <span
+              className="font-black tracking-[0.2em] uppercase"
+              style={{ fontFamily: "'Barlow Condensed', sans-serif", fontSize: "28px", lineHeight: 1 }}
+            >
+              NORIE
+            </span>
+          </Link>
+        </div>
+
+        {/* RIGHT LINKS */}
+        <div 
+          className="flex flex-col sm:flex-row items-end sm:items-center gap-2 sm:gap-10 font-bold uppercase tracking-[0.15em] text-[13px]"
+          style={{ fontFamily: "'Barlow Condensed', sans-serif" }}
         >
-          {/* LEFT LINKS (Hidden on small mobile, visible on sm+) */}
-          <div className="hidden sm:flex items-center gap-2">
-            <MagneticLink onClick={() => setActiveDrawer("menu")} style={navStyle}>
-              MENU
-            </MagneticLink>
-            <MagneticLink href="/all-products" style={navStyle} isActive={pathname === '/all-products'}>
-              SHOP
-            </MagneticLink>
-          </div>
+          <FlipText onClick={() => setActiveDrawer("menu")}>MENU</FlipText>
+          <FlipText href="/all-products" className="hidden sm:block">SHOP</FlipText>
+          <FlipText onClick={() => setActiveDrawer("search")} className="hidden sm:block">SEARCH</FlipText>
+          <FlipText onClick={() => setActiveDrawer("cart")}>
+            {cartCount > 0 ? `BAG [${cartCount}]` : "BAG"}
+          </FlipText>
+        </div>
 
-          {/* MOBILE MENU ICON (Only on tiny screens) */}
-          <div className="sm:hidden flex items-center">
-             <MagneticLink onClick={() => setActiveDrawer("menu")} style={navStyle}>
-              MENU
-            </MagneticLink>
-          </div>
-
-          {/* CENTER LOGO */}
-          <div className="flex items-center justify-center px-4">
-            <Link href="/" className="relative group overflow-hidden">
-              <motion.span
-                className="block font-black tracking-[0.25em] uppercase text-[#0a0a0a]"
-                style={{ fontFamily: "'Barlow Condensed', sans-serif", fontSize: "20px" }}
-                animate={{ scale: isHovered ? 1.05 : 1 }}
-                transition={{ duration: 0.4, ease: "easeOut" }}
-              >
-                NORIE
-              </motion.span>
-              <div className="absolute bottom-0 left-0 w-full h-[2px] bg-[#e8291c] origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)]" />
-            </Link>
-          </div>
-
-          {/* RIGHT LINKS (Hidden on small mobile, visible on sm+) */}
-          <div className="hidden sm:flex items-center gap-2">
-            <MagneticLink onClick={() => setActiveDrawer("search")} style={navStyle}>
-              SEARCH
-            </MagneticLink>
-            <MagneticLink onClick={() => setActiveDrawer("cart")} style={navStyle}>
-              {cartCount > 0 ? `BAG [${cartCount}]` : "BAG"}
-            </MagneticLink>
-          </div>
-
-          {/* MOBILE BAG ICON (Only on tiny screens) */}
-          <div className="sm:hidden flex items-center">
-             <MagneticLink onClick={() => setActiveDrawer("cart")} style={navStyle}>
-              {cartCount > 0 ? `BAG [${cartCount}]` : "BAG"}
-            </MagneticLink>
-          </div>
-        </motion.div>
-      </motion.div>
+      </div>
     </motion.header>
   );
 }
