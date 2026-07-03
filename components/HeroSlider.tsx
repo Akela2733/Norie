@@ -10,6 +10,12 @@ const images = [
   "/images/hero2-removebg-preview.png"
 ];
 
+const heroTexts = [
+  "NEW DROP",
+  "AUTUMN COLLECTION",
+  "ARCHIVE PIECES"
+];
+
 // A jagged polygon that looks like a torn edge running vertically near 50% width.
 const tornEdgeClipPath = "polygon(0 0, 49% 0, 52% 4%, 48% 8%, 51% 12%, 49% 16%, 53% 20%, 48% 24%, 52% 28%, 49% 32%, 51% 36%, 47% 40%, 52% 44%, 48% 48%, 51% 52%, 49% 56%, 53% 60%, 48% 64%, 52% 68%, 49% 72%, 51% 76%, 47% 80%, 52% 84%, 48% 88%, 51% 92%, 49% 96%, 52% 100%, 0 100%)";
 
@@ -155,15 +161,21 @@ export default function HeroSlider() {
             [ SEE COLLECTION ]
           </motion.span>
         </Link>
-        <motion.div
-          className="mt-6 text-xs font-bold uppercase tracking-widest pointer-events-none"
-          style={{ fontFamily: "'Barlow Condensed', sans-serif", color: "#e8291c" }}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 1, duration: 0.5 }}
-        >
-          01. NEW DROP
-        </motion.div>
+        <div className="mt-6 relative h-5 w-full flex justify-center pointer-events-none overflow-hidden">
+          <AnimatePresence mode="popLayout">
+            <motion.div
+              key={index}
+              className="absolute text-xs font-bold uppercase tracking-widest whitespace-nowrap"
+              style={{ fontFamily: "'Barlow Condensed', sans-serif", color: "#e8291c" }}
+              initial={{ y: "100%" }}
+              animate={{ y: "0%" }}
+              exit={{ y: "-100%" }}
+              transition={{ duration: 1.2, ease: [0.76, 0, 0.24, 1] }}
+            >
+              {heroTexts[index]}
+            </motion.div>
+          </AnimatePresence>
+        </div>
       </motion.div>
 
     </div>
