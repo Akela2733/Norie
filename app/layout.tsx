@@ -43,9 +43,7 @@ export default function RootLayout({
             <InitialLoader />
             <CustomCursor />
             <Header />
-            <div className="relative z-10 bg-[#e5e5e5] min-h-screen flex flex-col shadow-2xl">
-              <main className="flex-grow flex flex-col pt-24">{children}</main>
-            </div>
+            <main className="flex-grow flex flex-col pt-24">{children}</main>
             <Footer />
             <Drawers />
           </TransitionProvider>

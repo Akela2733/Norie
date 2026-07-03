@@ -36,7 +36,7 @@ function HeroBackground() {
             style={{
               fontFamily: "'Barlow Condensed', sans-serif",
               fontSize: "clamp(60px, 14vw, 200px)",
-              color: "rgba(10,10,10,0.07)",
+              color: "rgba(240,236,228,0.12)",
               letterSpacing: "-0.02em",
             }}
             initial={{ y: i % 2 === 0 ? "60px" : "-60px", opacity: 0 }}
@@ -63,7 +63,7 @@ function HeroBackground() {
             left: ring.x,
             top: ring.y,
             transform: "translate(-50%, -50%)",
-            border: "1px solid rgba(10,10,10,0.12)",
+            border: "1px solid rgba(240,236,228,0.2)",
           }}
           initial={{ scale: 0, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
@@ -76,7 +76,7 @@ function HeroBackground() {
         <motion.div
           key={`line-${i}`}
           className="absolute left-0 right-0"
-          style={{ top: `${pct}%`, height: "1px", background: "rgba(10,10,10,0.10)" }}
+          style={{ top: `${pct}%`, height: "1px", background: "rgba(240,236,228,0.15)" }}
           initial={{ scaleX: 0, transformOrigin: i % 2 === 0 ? "left" : "right" }}
           animate={{ scaleX: 1 }}
           transition={{ duration: 1.6, delay: 0.2 + i * 0.15, ease: [0.16, 1, 0.3, 1] }}
@@ -86,7 +86,7 @@ function HeroBackground() {
         <motion.div
           key={`vline-${i}`}
           className="absolute top-0 bottom-0"
-          style={{ left: `${pct}%`, width: "1px", background: "rgba(10,10,10,0.06)" }}
+          style={{ left: `${pct}%`, width: "1px", background: "rgba(240,236,228,0.08)" }}
           initial={{ scaleY: 0, transformOrigin: "top" }}
           animate={{ scaleY: 1 }}
           transition={{ duration: 1.8, delay: 0.4 + i * 0.15, ease: [0.16, 1, 0.3, 1] }}
@@ -154,7 +154,7 @@ export default function HeroSlider() {
   }, []);
 
   return (
-    <div ref={containerRef} className="relative w-full h-[100vh] overflow-hidden bg-[#e5e5e5] select-none">
+    <div ref={containerRef} className="relative w-full h-[100vh] overflow-hidden bg-[#0a0a0a] select-none -mt-24">
 
       {/* ========================================
           ALWAYS-VISIBLE ANIMATED BACKGROUND
@@ -191,7 +191,7 @@ export default function HeroSlider() {
         {/* Text ON TOP of the image */}
         <motion.div className="z-20 text-right pr-4 md:pr-12 w-[50vw]" style={{ y: textY, opacity }}>
           <h2
-            className="uppercase font-black leading-none text-[#0a0a0a]"
+            className="uppercase font-black leading-none text-[#f0ece4]"
             style={{
               fontFamily: "'Barlow Condensed', sans-serif",
               fontSize: "clamp(30px, 6vw, 90px)",
