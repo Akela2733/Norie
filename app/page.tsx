@@ -85,11 +85,11 @@ export default function Home() {
   const { scrollYProgress: structureScroll } = useScroll({ target: structureRef, offset: ["start end", "end start"] });
   const structureTextY = useTransform(structureScroll, [0, 1], [150, -150]);
   const categories = [
-    { name: "CORSETS", count: products.filter(p => p.category === "CORSETS").length, image: "/categories/corsets1.jfif" },
+    { name: "CORSETS", count: products.filter(p => p.category === "CORSETS").length, image: "/categories/corsets1.jpg" },
     { name: "DRESSES", count: products.filter(p => p.category === "DRESSES").length, image: "/categories/dresses1.webp" },
     { name: "PANTS",   count: products.filter(p => p.category === "PANTS").length,   image: "/categories/pants1.webp" },
     { name: "JACKETS", count: products.filter(p => p.category === "JACKETS").length, image: "/categories/jackets1.jpg" },
-    { name: "TOPS",    count: products.filter(p => p.category === "TOPS").length,    image: "/categories/tops1.jfif" },
+    { name: "TOPS",    count: products.filter(p => p.category === "TOPS").length,    image: "/categories/tops1.jpg" },
   ];
 
   return (
