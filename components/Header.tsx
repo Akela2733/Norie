@@ -99,14 +99,13 @@ export default function Header() {
 
   return (
     <motion.header
-      className="fixed top-0 left-0 right-0 z-50 select-none pointer-events-none px-6 md:px-12 py-8 mix-blend-difference text-white"
+      className="fixed top-0 left-0 right-0 z-[100] select-none pointer-events-none px-6 md:px-12 py-8 text-[#0a0a0a]"
       initial={{ y: -100, opacity: 0 }}
       animate={{ 
         y: hidden ? -100 : 0, 
         opacity: hidden ? 0 : 1 
       }}
       transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-      style={{ mixBlendMode: "difference", color: "#fff" }}
     >
       <div className="flex items-start justify-between w-full pointer-events-auto">
         

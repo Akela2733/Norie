@@ -67,12 +67,9 @@ export default function Footer() {
 
   return (
     <>
-      {/* Invisible spacer div to allow the main content to scroll past the fixed footer */}
-      <div style={{ height: footerHeight }} className="w-full pointer-events-none" />
-      
       <footer 
         ref={footerRef} 
-        className="fixed bottom-0 left-0 w-full z-0 overflow-hidden select-none bg-[#0a0a0a] text-[#f0ece4]"
+        className="relative w-full overflow-hidden select-none bg-[#0a0a0a] text-[#f0ece4]"
       >
         
         {/* Top Endless Marquee */}
