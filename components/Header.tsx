@@ -99,7 +99,13 @@ export default function Header() {
 
   return (
     <motion.header
-      className="fixed top-0 left-0 right-0 z-[100] select-none pointer-events-none text-[#0a0a0a]"
+      // The header itself is fully transparent — no background here.
+      // The content div uses mix-blend-mode: difference so white text
+      // automatically inverts to appear readable over ANY background color:
+      // → dark sections (#0a0a0a): text appears white ✓
+      // → light/cream sections (#f0ece4): text appears dark ✓
+      // → red ticker (#e8291c): text appears cyan (editorial look) ✓
+      className="fixed top-0 left-0 right-0 z-[100] select-none pointer-events-none"
       initial={{ y: -100, opacity: 0 }}
       animate={{ 
         y: hidden ? -100 : 0, 
@@ -110,10 +116,9 @@ export default function Header() {
       <div 
         className="flex items-start justify-between w-full pointer-events-auto px-6 md:px-12 py-6"
         style={{
-          background: "rgba(240, 236, 228, 0.85)",
-          backdropFilter: "blur(24px)",
-          WebkitBackdropFilter: "blur(24px)",
-          borderBottom: "1px solid rgba(10, 10, 10, 0.05)"
+          // mix-blend-mode: difference inverts text color relative to background
+          mixBlendMode: "difference",
+          color: "#ffffff",
         }}
       >
         
