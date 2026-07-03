@@ -99,7 +99,7 @@ export default function Header() {
 
   return (
     <motion.header
-      className="fixed top-0 left-0 right-0 z-[100] select-none pointer-events-none px-6 md:px-12 py-8 text-[#0a0a0a]"
+      className="fixed top-0 left-0 right-0 z-[100] select-none pointer-events-none text-[#0a0a0a]"
       initial={{ y: -100, opacity: 0 }}
       animate={{ 
         y: hidden ? -100 : 0, 
@@ -107,7 +107,15 @@ export default function Header() {
       }}
       transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
     >
-      <div className="flex items-start justify-between w-full pointer-events-auto">
+      <div 
+        className="flex items-start justify-between w-full pointer-events-auto px-6 md:px-12 py-6"
+        style={{
+          background: "rgba(240, 236, 228, 0.85)",
+          backdropFilter: "blur(24px)",
+          WebkitBackdropFilter: "blur(24px)",
+          borderBottom: "1px solid rgba(10, 10, 10, 0.05)"
+        }}
+      >
         
         {/* LEFT LOGO */}
         <div className="flex-1">
