@@ -26,6 +26,7 @@ export default async function ProductPage({ params }: PageProps) {
 
   const product = {
     ...rawProduct,
+    originalPrice: rawProduct.originalPrice ?? undefined,
     details: JSON.parse(rawProduct.details),
     care: JSON.parse(rawProduct.care),
     sizes: JSON.parse(rawProduct.sizes),
@@ -42,6 +43,7 @@ export default async function ProductPage({ params }: PageProps) {
 
   const relatedProducts = relatedRaw.map((p) => ({
     ...p,
+    originalPrice: p.originalPrice ?? undefined,
     details: JSON.parse(p.details),
     care: JSON.parse(p.care),
     sizes: JSON.parse(p.sizes),
