@@ -56,7 +56,7 @@ function TransitionProviderContent({ children }: { children: ReactNode }) {
            window.location.hash = url.hash;
            return;
         }
-        navigate(target.href);
+        navigate(url.pathname + url.search + url.hash);
       }
     };
     
