@@ -3,8 +3,7 @@
 import Link from "next/link";
 import { useStore } from "@/app/store-context";
 import { motion, useScroll, useMotionValueEvent } from "framer-motion";
-import { useState } from "react";
-
+import { useState, useEffect } from "react";
 function FlipText({
   children,
   href,
